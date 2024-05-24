@@ -1,0 +1,37 @@
+<!-- templates/admin.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+</head>
+<body>
+    <h1>Admin - Manage Uploaded Videos</h1>
+    <ul>
+        {% for video in videos %}
+        <li>
+            <video width="320" height="240" controls>
+                <source src="{{ url_for('static', filename='uploads/' + video['filename']) }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <form method="post">
+                <input type="hidden" name="video_id" value="{{ video['id'] }}">
+                <label>Title:</label>
+                <input type="text" name="title" value="{{ video['title'] }}">
+                <label>Description:</label>
+                <textarea name="description">{{ video['description'] }}</textarea>
+                <label>Date:</label>
+                <input type="text" name="date" value="{{ video['date'] }}">
+                <label>Restricted:</label>
+                <input type="checkbox" name="restricted" {% if video['restricted'] %}checked{% endif %}>
+                <button type="submit" name="update">Update</button>
+                <button type="submit" name="delete">Delete</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+
+

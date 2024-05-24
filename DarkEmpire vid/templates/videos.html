@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uploaded Videos</title>
+    <style>
+        .video-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+        .video-item {
+            width: 300px;
+            margin: 10px;
+        }
+        .video-item video {
+            width: 100%;
+        }
+        .navigation {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .navigation button {
+            margin: 0 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Uploaded Videos</h1>
+    <div class="video-container" id="videoContainer">
+        {% for video in videos %}
+            <div class="video-item">
+                <video controls>
+                    <source src="{{ url_for('static', filename='uploads/' + video) }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <p>{{ video }}</p>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="navigation">
+        <button onclick="previousVideos()">Previous</button>
+        <button onclick="nextVideos()">Next</button>
+    </div>
+
+    <script>
+        var videosPerPage = 5;
+        var currentPage = 1;
+        var totalVideos = {{ videos|length }};
+        var totalPages = Math.ceil(totalVideos / videosPerPage);
+
+        function showVideos(page) {
+            var videoContainer = document.getElementById('videoContainer');
+            var videos = videoContainer.getElementsByClassName('video-item');
+
+            // Hide all videos
+            for (var i = 0; i < videos.length; i++) {
+                videos[i].style.display = 'none';
+            }
+
+            // Calculate start and end index for videos on current page
+            var startIndex = (page - 1) * videosPerPage;
+            var endIndex = Math.min(startIndex + videosPerPage, totalVideos);
+
+            // Show videos for current page
+            for (var i = startIndex; i < endIndex; i++) {
+                videos[i].style.display = 'block';
+            }
+        }
+
+        function previousVideos() {
+            if (currentPage > 1) {
+                currentPage--;
+                showVideos(currentPage);
+            }
+        }
+
+        function nextVideos() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                showVideos(currentPage);
+            }
+        }
+
+        showVideos(currentPage);
+    </script>
+</body>
+</html>
